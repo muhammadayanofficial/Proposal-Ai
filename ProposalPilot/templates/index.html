@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ProposalPilot</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="app">
+
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-name">ProposalPilot</span>
+      </div>
+      <button type="button" id="new-btn" class="btn btn-primary btn-block">New proposal</button>
+
+      <div class="sidebar-head">
+        <h2>Recent proposals</h2>
+        <span id="list-count" class="count"></span>
+      </div>
+      <div id="proposal-list" class="proposal-list"></div>
+      <p id="list-empty" class="empty" hidden>
+        No saved proposals yet. Generate a draft, then save it to see it here.
+      </p>
+    </aside>
+
+    <main class="main">
+      <header class="page-head">
+        <h1>Proposal workspace</h1>
+        <p>Turn a client brief into a structured draft, refine it, and save or export it.</p>
+      </header>
+
+      <div id="notice" class="notice" role="status" aria-live="polite" hidden>
+        <span id="notice-text"></span>
+        <button type="button" id="notice-close" class="link-btn">Dismiss</button>
+      </div>
+
+      <div class="workspace">
+
+        <section class="card" aria-labelledby="brief-heading">
+          <h2 id="brief-heading" class="card-title">Project details</h2>
+          <form id="brief-form" novalidate>
+            <div class="field">
+              <label for="title">Project title</label>
+              <input id="title" name="title" type="text" maxlength="{{ limits.title }}" required
+                     placeholder="e.g. Website redesign for a bakery">
+            </div>
+            <div class="field">
+              <label for="client_name">Client name</label>
+              <input id="client_name" name="client_name" type="text" maxlength="{{ limits.client_name }}" required
+                     placeholder="e.g. Jordan Lee">
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="category">Category</label>
+                <select id="category" name="category" required>
+                  {% for c in categories %}<option value="{{ c }}">{{ c }}</option>{% endfor %}
+                </select>
+              </div>
+              <div class="field">
+                <label for="tone">Tone</label>
+                <select id="tone" name="tone" required>
+                  {% for t in tones %}<option value="{{ t }}">{{ t }}</option>{% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="budget">Budget <span class="opt">optional</span></label>
+                <input id="budget" name="budget" type="text" maxlength="{{ limits.budget }}"
+                       placeholder="e.g. USD 1,500 to 2,000">
+              </div>
+              <div class="field">
+                <label for="deadline">Deadline <span class="opt">optional</span></label>
+                <input id="deadline" name="deadline" type="text" maxlength="{{ limits.deadline }}"
+                       placeholder="e.g. 6 weeks, or end of June">
+              </div>
+            </div>
+            <div class="field">
+              <label for="brief">Client brief</label>
+              <textarea id="brief" name="brief" rows="9" maxlength="{{ limits.brief }}" required
+                        placeholder="Paste the client's requirements, messages, or notes from your call."></textarea>
+              <div class="field-foot">
+                <span class="hint">Minimum {{ limits.brief_min }} characters.</span>
+                <span id="brief-count" class="hint">0 / {{ limits.brief }}</span>
+              </div>
+            </div>
+            <button type="submit" id="generate-btn" class="btn btn-primary btn-block">Generate proposal</button>
+          </form>
+        </section>
+
+        <section class="card card-editor" aria-labelledby="editor-heading">
+          <div class="editor-head">
+            <h2 id="editor-heading" class="card-title">Proposal draft</h2>
+            <span id="status-pill" class="pill">No draft</span>
+          </div>
+          <label for="proposal_text" class="sr-only">Proposal text (Markdown)</label>
+          <textarea id="proposal_text" class="editor" spellcheck="true"
+                    maxlength="{{ limits.proposal_text }}"
+                    placeholder="Your generated proposal appears here as editable Markdown. You can also write or paste a proposal manually."></textarea>
+          <p class="hint editor-hint">
+            Review every line before sending. Replace bracketed placeholders and confirm all timeline estimates.
+          </p>
+          <div class="actions">
+            <button type="button" id="save-btn" class="btn btn-primary" disabled>Save proposal</button>
+            <button type="button" id="download-btn" class="btn" disabled>Download .md</button>
+            <button type="button" id="delete-btn" class="btn btn-danger" hidden>Delete</button>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
